@@ -4,14 +4,16 @@ import asyncio
 import aiofiles
 import argparse
 import random
-import time
 from aiohttp import ClientSession
 from aiologger import Logger
 from aiologger.formatters.base import Formatter
 from pathlib import Path
 
-aio_logger = Logger.with_default_handlers(name='aio_image_downloader',
-                                          formatter=Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+aio_logger = Logger.with_default_handlers(
+    name='aio_image_downloader',
+    # formatter=Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter=Formatter(fmt='%(message)s')
+)
 
 glob_configs = {
     "export_dir": Path("cats"),
@@ -32,22 +34,22 @@ def build_img_export_name(img_url) -> Path:
 
 async def load_and_export_img(img_url, response):
     export_img = build_img_export_name(img_url)
-    aio_logger.info(f"Write img to: {export_img} ...")
     async with aiofiles.open(export_img, mode='wb') as f:
         await f.write(await response.read())
     glob_configs["nb_img_downloaded"] += 1
+    await aio_logger.info(f'Download complete: {img_url}')
 
 
-async def fetch(url, session):
-    await aio_logger.info(f"Fetch img at: {url} ...")
-    async with session.get(url) as response:
+async def fetch(img_url, session):
+    await aio_logger.info(f'Downloading: {img_url}')
+    async with session.get(img_url) as response:
         if response.status == 200:
             if 'image' in response.headers.get("content-type", ''):
-                await load_and_export_img(url, response)
+                await load_and_export_img(img_url, response)
             else:
-                await aio_logger.warning(f"content at {url} not image type (content-type={response.headers.get('content-type', '')})")
+                await aio_logger.warning(f"content at {img_url} not image type (content-type={response.headers.get('content-type', '')})")
         else:
-            await aio_logger.warning(f"Can't fetch img at: {url} - status: {response.status} (!= 200)")
+            await aio_logger.warning(f"Can't fetch img at: {img_url} - status: {response.status} (!= 200)")
 
 
 async def run(img_urls):
@@ -101,8 +103,4 @@ def main():
 
 
 if __name__ == '__main__':
-    start = time.time()
     main()
-    end = time.time()
-    print(f'Time taken to download {glob_configs["nb_img_downloaded"]}')
-    print(end - start)

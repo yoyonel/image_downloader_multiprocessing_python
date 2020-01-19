@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import sys
-import time
 
 import io
 import pathlib
@@ -8,8 +7,6 @@ import random
 import requests
 from PIL import Image
 from multiprocessing.pool import ThreadPool
-
-start = time.time()
 
 
 def get_download_location():
@@ -46,14 +43,14 @@ def image_downloader(img_url: str):
     """
     print(f'Downloading: {img_url}')
     res = requests.get(img_url, stream=True)
-    count = 1
-    while res.status_code != 200 and count <= 5:
-        res = requests.get(img_url, stream=True)
-        print(f'Retry: {count} {img_url}')
-        count += 1
+    # count = 1
+    # while res.status_code != 200 and count <= 5:
+    #     res = requests.get(img_url, stream=True)
+    #     print(f'Retry: {count} {img_url}')
+    #     count += 1
     # checking the type for image
     if 'image' not in res.headers.get("content-type", ''):
-        print('ERROR: URL doesnot appear to be an image')
+        print("ERROR: URL doesn't appear to be an image")
         return False
     # Trying to red image name from response headers
     try:
@@ -87,9 +84,4 @@ except:
     num_process = 10
 
 images_url = get_urls()
-# images_url = images_url[:50]
 run_downloader(num_process, images_url)
-
-end = time.time()
-print('Time taken to download {}'.format(len(images_url)))
-print(end - start)

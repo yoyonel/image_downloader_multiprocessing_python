@@ -54,7 +54,7 @@ def request_for_cancelling_all_tasks(loop):
     :return:
     """
     # Optionally show a message if the shutdown may take a while
-    logger.info("[{}] Attempting graceful shutdownâ€¦".format(id(loop)))
+    logger.info("[{}] Attempting graceful shutdown ⌛".format(id(loop)))
 
     # Do not show `asyncio.CancelledError` exceptions during shutdown
     # (a lot of these may be generated, skip this if you prefer to see them)
@@ -104,6 +104,31 @@ async def generic_consumer(
         #
         try:
             item_processed = func_apply_on_item(item)
+        except Exception as e:
+            if loop is None:
+                loop = asyncio.get_event_loop()
+            loop.call_exception_handler({
+                'message': 'Exception occurred in Consumer function apply',
+                'exception': e,
+            })
+        else:
+            await queue_output.put(item_processed)
+        finally:
+            queue_input.task_done()
+
+
+async def async_consumer(
+        queue_input: Queue,
+        queue_output: Queue,
+        async_func_apply_on_item: Callable,
+        loop=None,
+):
+    while True:
+        # wait for an item from the producer
+        item = await queue_input.get()
+        #
+        try:
+            item_processed = await async_func_apply_on_item(item)
         except Exception as e:
             if loop is None:
                 loop = asyncio.get_event_loop()
