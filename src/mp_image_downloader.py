@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
-import io
-import random
-import shutil
 import sys
-from multiprocessing.pool import ThreadPool
-import pathlib
-
-import requests
-from PIL import Image
 import time
 
+import io
+import pathlib
+import random
+import requests
+from PIL import Image
+from multiprocessing.pool import ThreadPool
 
 start = time.time()
 
@@ -63,11 +61,11 @@ def image_downloader(img_url: str):
         if '?' in image_name:
             image_name = image_name[:image_name.find('?')]
     except:
-        image_name = str(random.randint(11111, 99999))+'.jpg'
+        image_name = str(random.randint(11111, 99999)) + '.jpg'
 
     i = Image.open(io.BytesIO(res.content))
     download_location = get_download_location()
-    i.save(download_location + '/'+image_name)
+    i.save(download_location + '/' + image_name)
     return f'Download complete: {img_url}'
 
 
@@ -89,9 +87,9 @@ except:
     num_process = 10
 
 images_url = get_urls()
+# images_url = images_url[:50]
 run_downloader(num_process, images_url)
 
-
 end = time.time()
-print('Time taken to download {}'.format(len(get_urls())))
+print('Time taken to download {}'.format(len(images_url)))
 print(end - start)

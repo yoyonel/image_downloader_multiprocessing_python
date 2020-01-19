@@ -1,2 +1,7 @@
-requests
+aiofiles
+aiohttp
+aiologger
+argparse
 pillow
+requests
+uvloop
