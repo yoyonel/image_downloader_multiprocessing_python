@@ -3,7 +3,9 @@ import asyncio
 
 import aiofiles
 import argparse
+import logging
 import random
+import tqdm
 from aiohttp import ClientSession
 from aiologger import Logger
 from aiologger.formatters.base import Formatter
@@ -12,13 +14,11 @@ from pathlib import Path
 aio_logger = Logger.with_default_handlers(
     name='aio_image_downloader',
     # formatter=Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    formatter=Formatter(fmt='%(message)s')
+    formatter=Formatter(fmt='%(message)s'),
+    level=logging.INFO,
 )
 
-glob_configs = {
-    "export_dir": Path("cats"),
-    "nb_img_downloaded": 0,
-}
+glob_configs = {"export_dir": Path("cats")}
 
 
 def build_img_export_name(img_url) -> Path:
@@ -32,24 +32,26 @@ def build_img_export_name(img_url) -> Path:
     return glob_configs["export_dir"] / image_name
 
 
-async def load_and_export_img(img_url, response):
+async def load_and_export_img(img_url, response) -> bool:
     export_img = build_img_export_name(img_url)
     async with aiofiles.open(export_img, mode='wb') as f:
         await f.write(await response.read())
-    glob_configs["nb_img_downloaded"] += 1
-    await aio_logger.info(f'Download complete: {img_url}')
+    await aio_logger.debug(f'Download complete: {img_url}')
+    return True
 
 
-async def fetch(img_url, session):
-    await aio_logger.info(f'Downloading: {img_url}')
+async def fetch(img_url, session) -> bool:
+    img_downloaded = False
+    await aio_logger.debug(f'Downloading: {img_url}')
     async with session.get(img_url) as response:
         if response.status == 200:
             if 'image' in response.headers.get("content-type", ''):
-                await load_and_export_img(img_url, response)
+                img_downloaded = await load_and_export_img(img_url, response)
             else:
                 await aio_logger.warning(f"content at {img_url} not image type (content-type={response.headers.get('content-type', '')})")
         else:
             await aio_logger.warning(f"Can't fetch img at: {img_url} - status: {response.status} (!= 200)")
+    return img_downloaded
 
 
 async def run(img_urls):
@@ -63,7 +65,10 @@ async def run(img_urls):
         for img_url in img_urls:
             task = asyncio.ensure_future(fetch(img_url, session))
             tasks.append(task)
-        await asyncio.gather(*tasks)
+        # https://stackoverflow.com/questions/37901292/asyncio-aiohttp-progress-bar-with-tqdm
+        nb_img_downloaded = sum([await f
+                                 for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))])
+    aio_logger.info(f"Nb img downloaded: {nb_img_downloaded}/{len(img_urls)}")
 
 
 def build_parser():

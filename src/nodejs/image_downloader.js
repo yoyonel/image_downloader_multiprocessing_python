@@ -4,10 +4,12 @@ const request = require('request').defaults({
 });
 const bluebird = require('bluebird');
 const fs = require('fs-extra');
+var log = require('single-line-log').stdout;
 const CONCURRENCY_LEVEL = 50;
 
 async function download(url, index) {
-    console.log(index);
+    log("Images retains: " + index);
+
     if (!url) {
         return Promise.resolve();
     }
