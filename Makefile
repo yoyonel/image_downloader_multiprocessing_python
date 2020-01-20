@@ -19,7 +19,7 @@ for line in sys.stdin:
 	match = re.match(r'^([a-zA-Z_-]+):.*?## (.*)$$', line)
 	if match:
 		target, help = match.groups()
-		print("%-20s %s" % (target, help))
+		print("%-30s %s" % (target, help))
 endef
 export PRINT_HELP_PYSCRIPT
 help:
@@ -35,6 +35,15 @@ image_downloader_aio: clean-img		## download images with asynchronous version
 image_downloader_mp: clean-img		## download images with multiprocessing version
 	@python $(PYTHON_ROOTDIR)/multiprocessing/image_downloader.py \
 		$(URL_IMG)
+
+nodejs_install:		## install nodejs packages
+	@/bin/bash -c "pushd src/nodejs; \
+		npm install .; \
+		npm ls --depth 0; \
+		popd;"
+
+nodejs_clean:	## remove node_modules
+	@rm -rf src/nodejs/node_modules
 
 nodejs_image_downloader: clean-img		## download images with node-js version
 	@node src/nodejs/image_downloader.js

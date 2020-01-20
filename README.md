@@ -29,6 +29,20 @@ python3 image_downloader.py <filename_with_urls_seperated_by_newline.txt> <num_o
 This will read all the urls in the text file and download them into a folder with name same as the filename.
 num_of_process is optional.(by default it uses 10 process)
 
+### Makefile
+
+```bash
+╰─ make help
+image_downloader_aio           download images with asynchronous version
+image_downloader_mp            download images with multiprocessing version
+nodejs_install                 install nodejs packages
+nodejs_clean                   remove node_modules
+nodejs_image_downloader        download images with node-js version
+clean                          remove all venv, build, coverage and Python artifacts
+img-export-dir                 create images export directory
+clean-img                      remove images files
+clean-pyc                      remove Python file artifacts (*.pyc,*.pyo,*~,__pycache__)
+```
 
 ### Example
 
