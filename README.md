@@ -81,7 +81,7 @@ Command being timed: "make image_downloader_mp"
         Page size (bytes): 4096
 ```
 
-```sh
+```bash
 ╰─ /usr/bin/time -v make image_downloader_aio
 find cats -name '*.jpg' -exec rm -f {} +
 Nb url images: 1183
@@ -89,23 +89,61 @@ Downloading: https://cdn.pixabay.com/photo/2017/06/12/19/02/cat-2396473__480.jpg
 [...]
 Download complete: https://cdn.pixabay.com/photo/2014/10/29/22/12/cat-508665__480.jpg
 Command being timed: "make image_downloader_aio"
-        User time (seconds): 3.95
-        System time (seconds): 0.98
-        Percent of CPU this job got: 34%
-        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:14.51
+        Command being timed: "make image_downloader_aio"
+        User time (seconds): 6.26
+        System time (seconds): 1.43
+        Percent of CPU this job got: 54%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:14.24
         Average shared text size (kbytes): 0
         Average unshared data size (kbytes): 0
         Average stack size (kbytes): 0
         Average total size (kbytes): 0
-        Maximum resident set size (kbytes): 59300
+        Maximum resident set size (kbytes): 60476
         Average resident set size (kbytes): 0
-        Major (requiring I/O) page faults: 10
-        Minor (reclaiming a frame) page faults: 14560
-        Voluntary context switches: 37895
-        Involuntary context switches: 653
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 21267
+        Voluntary context switches: 38882
+        Involuntary context switches: 185
         Swaps: 0
-        File system inputs: 7096
+        File system inputs: 0
         File system outputs: 132632
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+```
+
+```bash
+╰─ /usr/bin/time -v make nodejs_image_downloader
+find cats -name '*.jpg' -exec rm -f {} +
+0
+1
+2
+3
+[...]
+52
+51
+50
+End.
+        Command being timed: "make nodejs_image_downloader"
+        User time (seconds): 6.77
+        System time (seconds): 2.02
+        Percent of CPU this job got: 54%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:16.19
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 95616
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 23830
+        Voluntary context switches: 35553
+        Involuntary context switches: 192
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 132936
         Socket messages sent: 0
         Socket messages received: 0
         Signals delivered: 0

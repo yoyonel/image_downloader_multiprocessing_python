@@ -36,6 +36,9 @@ image_downloader_mp: clean-img		## download images with multiprocessing version
 	@python $(PYTHON_ROOTDIR)/multiprocessing/image_downloader.py \
 		$(URL_IMG)
 
+nodejs_image_downloader: clean-img		## download images with node-js version
+	@node src/nodejs/image_downloader.js
+
 clean: clean-img clean-pyc ## remove all venv, build, coverage and Python artifacts
 
 img-export-dir:	## create images export directory

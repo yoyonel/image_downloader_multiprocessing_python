@@ -1,0 +1,16 @@
+{
+  "name": "image_downloader",
+  "version": "1.0.0",
+  "description": "Images Downloader",
+  "main": "image_downloader.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "fs-extra": "^8.1.0",
+    "request": "^2.88.0"
+  }
+}
