@@ -1,6 +1,8 @@
 cats/
 
+# easyhttpcpp
 _external/
+_install/
 
 # https://github.com/github/gitignore/blob/master/C%2B%2B.gitignore
 # Prerequisites
