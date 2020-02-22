@@ -11,6 +11,7 @@
   "dependencies": {
     "bluebird": "^3.7.2",
     "fs-extra": "^8.1.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "single-line-log": "^1.1.2"
   }
 }
