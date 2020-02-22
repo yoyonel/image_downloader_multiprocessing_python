@@ -5,4 +5,4 @@ argparse
 pillow
 requests
 tqdm
-uvloop
+uvloop; sys_platform != 'win32'
