@@ -11,6 +11,8 @@ from aiologger import Logger
 from aiologger.formatters.base import Formatter
 from pathlib import Path
 
+from tools.aiohttp_ignore_ssl_error import ignore_aiohttp_ssl_error
+
 aio_logger = Logger.with_default_handlers(
     name='aio_image_downloader',
     # formatter=Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -103,6 +105,7 @@ def main():
         urls_img = io_urls_img.read().splitlines()
 
     loop = asyncio.get_event_loop()
+    ignore_aiohttp_ssl_error(loop)
     future = asyncio.ensure_future(run(urls_img))
     loop.run_until_complete(future)
 
