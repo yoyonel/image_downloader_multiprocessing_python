@@ -10,6 +10,7 @@ IMG_EXPORT_DIR?=cats
 URL_IMG?=cats.txt
 
 PYTEST_OPTIONS?=
+POST_RUN?=
 
 # https://github.com/AnyBlok/anyblok-book-examples/blob/III-06_polymorphism/Makefile
 define PRINT_HELP_PYSCRIPT
@@ -28,13 +29,16 @@ help:
 all: image_downloader_aio
 
 image_downloader_aio: clean-img		## download images with asynchronous version
-	@python $(PYTHON_ROOTDIR)/async/image_downloader.py \
+	@PYTHONPATH=src:${PYTHONPATH} \
+	python $(PYTHON_ROOTDIR)/async/image_downloader.py \
 		$(URL_IMG) \
-		--export_dir $(IMG_EXPORT_DIR)
+		--export_dir $(IMG_EXPORT_DIR) \
+	${POST_RUN}
 
 image_downloader_mp: clean-img		## download images with multiprocessing version
 	@python $(PYTHON_ROOTDIR)/multiprocessing/image_downloader.py \
-		$(URL_IMG)
+		$(URL_IMG) \
+	${POST_RUN}
 
 nodejs_install:		## install nodejs packages
 	@/bin/bash -c "pushd src/nodejs; \
@@ -46,7 +50,8 @@ nodejs_clean:	## remove node_modules
 	@rm -rf src/nodejs/node_modules
 
 nodejs_image_downloader: clean-img		## download images with node-js version
-	@node src/nodejs/image_downloader.js
+	@node src/nodejs/image_downloader.js \
+	${POST_RUN}
 
 clean: clean-img clean-pyc ## remove all venv, build, coverage and Python artifacts
 
