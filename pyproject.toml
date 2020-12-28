@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "image_downloader_multiprocessing_python"
+version = "0.1.0"
+description = ""
+authors = ["ATTY Lionel <lionel.atty@365talents.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+aiofiles = "^0.6.0"
+aiohttp = "^3.7.3"
+aiologger = "^0.6.0"
+argparse = "^1.4.0"
+Pillow = "^8.0.1"
+requests = "^2.25.1"
+tqdm = "^4.55.0"
+uvloop = "^0.14.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

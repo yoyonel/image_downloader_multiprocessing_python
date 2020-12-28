@@ -28,15 +28,18 @@ help:
 
 all: image_downloader_aio
 
+python-setup:
+	@poetry install
+
 image_downloader_aio: clean-img		## download images with asynchronous version
 	@PYTHONPATH=src:${PYTHONPATH} \
-	python $(PYTHON_ROOTDIR)/async/image_downloader.py \
+	poetry run python $(PYTHON_ROOTDIR)/async/image_downloader.py \
 		$(URL_IMG) \
 		--export_dir $(IMG_EXPORT_DIR) \
 	${POST_RUN}
 
 image_downloader_mp: clean-img		## download images with multiprocessing version
-	@python $(PYTHON_ROOTDIR)/multiprocessing/image_downloader.py \
+	@poetry run python $(PYTHON_ROOTDIR)/multiprocessing/image_downloader.py \
 		$(URL_IMG) \
 	${POST_RUN}
 
