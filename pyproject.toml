@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "image_downloader_multiprocessing_python"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 authors = ["ATTY Lionel <lionel.atty@365talents.com>"]
 
