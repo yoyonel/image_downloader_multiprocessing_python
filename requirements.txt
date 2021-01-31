@@ -1,0 +1,8 @@
+aiofiles
+aiohttp
+aiologger
+argparse
+pillow
+requests
+tqdm
+uvloop; sys_platform != 'win32'
