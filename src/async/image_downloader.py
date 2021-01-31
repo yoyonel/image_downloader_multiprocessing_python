@@ -30,7 +30,6 @@ def build_img_export_name(img_url) -> Path:
             image_name = image_name[:image_name.find('?')]
     except:
         image_name = str(random.randint(11111, 99999)) + '.jpg'
-
     return glob_configs["export_dir"] / image_name
 
 
@@ -43,33 +42,25 @@ async def load_and_export_img(img_url, response) -> bool:
 
 
 async def fetch(img_url, session) -> bool:
-    img_downloaded = False
     await aio_logger.debug(f'Downloading: {img_url}')
     async with session.get(img_url) as response:
-        if response.status == 200:
-            if 'image' in response.headers.get("content-type", ''):
-                img_downloaded = await load_and_export_img(img_url, response)
-            else:
-                await aio_logger.warning(f"content at {img_url} not image type (content-type={response.headers.get('content-type', '')})")
-        else:
+        if response.status != 200:
             await aio_logger.warning(f"Can't fetch img at: {img_url} - status: {response.status} (!= 200)")
-    return img_downloaded
+            return False
+        if 'image' not in response.headers.get("content-type", ''):
+            await aio_logger.warning(f"content at {img_url} not image type (content-type={response.headers.get('content-type', '')})")
+            return False
+        return await load_and_export_img(img_url, response)
 
 
 async def run(img_urls):
     await aio_logger.info(f"Nb url images: {len(img_urls)}")
-
-    tasks = []
-
     # Fetch all responses within one Client session,
     # keep connection alive for all requests.
     async with ClientSession() as session:
-        for img_url in img_urls:
-            task = asyncio.ensure_future(fetch(img_url, session))
-            tasks.append(task)
+        tasks = [asyncio.ensure_future(fetch(img_url, session)) for img_url in img_urls]
         # https://stackoverflow.com/questions/37901292/asyncio-aiohttp-progress-bar-with-tqdm
-        nb_img_downloaded = sum([await f
-                                 for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))])
+        nb_img_downloaded = sum([await f for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))])
     aio_logger.info(f"Nb img downloaded: {nb_img_downloaded}/{len(img_urls)}")
 
 
